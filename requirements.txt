@@ -1,0 +1,9 @@
+# this is a comment
+-r development.txt # you can use -r to add more files to your bundle
+
+flask
+psycopg2-binary
+alembic
+email_validator
+Flask-SQLAlchemy==2.5.1
+Flask-Migrate==2.7.0
