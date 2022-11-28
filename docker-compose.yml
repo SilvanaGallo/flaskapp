@@ -7,12 +7,12 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=flaskblog
+      - POSTGRES_DB=flaskapp
     ports:
       - '5432:5432'
     volumes:
-      - flaskblog-db:/var/lib/postgresql/data
+      - flaskapp-db:/var/lib/postgresql/data
 
 volumes:
-  flaskblog-db:
+  flaskapp-db:
     driver: local

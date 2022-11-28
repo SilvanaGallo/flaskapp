@@ -11,5 +11,5 @@ def which():
 
 @main.route("/check")
 def check():
-    result = {'status': 'OK'}
-    return json.dumps(result, indent=2)
+    result = {"status": "OK"}
+    return result
