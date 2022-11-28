@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from flask import request
 import requests
 import json
 
@@ -26,63 +27,117 @@ class Repository(ABC):
     def delete_item(id: int):
         return
 
+
 class RollbarRepository(Repository):
- 
-    items_url = 'https://api.rollbar.com/api/1/items/' # repository url class variable
-    
+
+    # repository URLs class variables
+    items_url = 'https://api.rollbar.com/api/1/items/' 
+    item_url =  'https://api.rollbar.com/api/1/item' 
 
     def list_items(self):
-        api_key = Config.READ
-            
+        params = request.args.to_dict()
         r = requests.get(
                         self.items_url,
-                        headers = {'accept': 'application/json', 'X-Rollbar-Access-Token': api_key},
-                        params = {'status': 'all'}
+                        headers = {'accept': 'application/json', 
+                                    'X-Rollbar-Access-Token': Config.READ},
+                        params = params
                     )
         print(f"Status code: {r.status_code}")
         return r.json()
     
+    
+    # It needs a refactorization
+    def _create_dictionary(self) -> dict:
+
+        params = request.get_json()
+        print(params.items())
+        message = {"body": params['message-body']}
+        if params['route']:
+            message["route"] = params['route']
+        
+        payload =  {"data": {
+                            "environment": params['environment'],
+                            "body": {
+                                    "message": message
+                                    }
+                            }
+                    }
+
+        for i in ['level', 'title', 'user-id', 'status']:
+            if params[i]:
+                payload["data"][i] = params[i] 
+        
+        return payload
+
+
     def create_item(self):
-        api_key = Config.POST_SERVER_ITEM
-            
-        payload =  {"data": {"environment": "production","body": {"message": {"body": "Message 4"}}}}
         r = requests.post(
-                        self.items_url,
+                        self.item_url,
                         headers = {'accept': 'application/json', 
                                     'content-type': 'application/json', 
-                                    'X-Rollbar-Access-Token': api_key
+                                    'X-Rollbar-Access-Token': Config.POST_SERVER_ITEM
                                 },
-                        json = payload
+                        json = self._create_dictionary()
                     )
         print(f"Status code: {r.status_code}")
         return r.json()
     
+
     def get_item(self, id: int):
-        api_key = Config.READ
         
-        url_and_id = f"{self.items_url}{id}" 
+        url_and_id = f"{self.item_url}/{id}" 
        
         r = requests.get(
                         url_and_id,
-                        headers = {'accept': 'application/json', 'content-type': 'application/json', 'X-Rollbar-Access-Token': api_key},
+                        headers = {'accept': 'application/json', 
+                                    'content-type': 'application/json', 
+                                    'X-Rollbar-Access-Token': Config.READ},
                     )
         print(f"Status code: {r.status_code}")
         return r.json()
     
+
     def update_item(self, id: int):
-        api_key = Config.WRITE
-        url_and_id = f"{self.items_url}/{id}" 
-        # armar bien el data con status title resolved_in_version, level, assigned_user_id    
-        # data_dict =  {'environment': 'production', 'body': { 'message': {'body': 'Hello, world!'}}}
         
+        url_and_id = f"{self.item_url}/{id}" 
+        data_dict =  request.get_json()
+        
+        print(data_dict)
         r = requests.patch(
                         url_and_id,
-                        headers = {'accept': 'application/json', 'content-type': 'application/json', 'X-Rollbar-Access-Token': api_key},
-                        #json = data_dict
+                        headers = {'accept': 'application/json', 
+                                    'content-type': 'application/json', 
+                                    'X-Rollbar-Access-Token': Config.WRITE},
+                        json = data_dict
                     )
         print(f"Status code: {r.status_code}")
         return r.json()
+
 
     def delete_item(self, id: int):
         result = {"data": {"err": 1, "message": "Items can't be deleted."}}
         return json.dumps(result, indent=2)
+
+    #     def report
+    #     READ SCOPE
+    #     HOURS int
+    #     environments
+    #     curl --request GET \
+    #  --url 'https://api.rollbar.com/api/1/reports/top_active_items?hours=24&environments=development%252Cproduction' \
+    #  --header 'X-Rollbar-Access-Token: 23af3aef8c4e4138a8ddb7df189faa78' \
+    #  --header 'accept: application/json'
+# https://api.rollbar.com/api/1/reports/top_active_items
+
+#     def report
+#environment vacio es todos
+# curl --request GET \
+    #  --url 'https://api.rollbar.com/api/1/reports/occurrence_counts?bucket_size=86400&min_level=error&max_level=critical&item_id=1234' \
+    #  --header 'X-Rollbar-Access-Token: 23af3aef8c4e4138a8ddb7df189faa78'
+# https://api.rollbar.com/api/1/reports/occurrence_counts
+
+#     report
+# 
+# curl --request GET \
+    #  --url 'https://api.rollbar.com/api/1/reports/activated_counts?bucket_size=86400&buckets=60&environments=development' \
+    #  --header 'X-Rollbar-Access-Token: 23af3aef8c4e4138a8ddb7df189faa78'
+# https://api.rollbar.com/api/1/reports/activated_counts

@@ -11,10 +11,5 @@ def which():
 
 @main.route("/check")
 def check():
-    # try: 
-    #     conn = db.make_connector()
-    #     conn. O ALGO  .connect()
-    # except:
-
     result = {'status': 'OK'}
     return json.dumps(result, indent=2)
