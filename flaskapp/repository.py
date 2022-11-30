@@ -43,7 +43,6 @@ class RollbarRepository(Repository):
                                     'X-Rollbar-Access-Token': Config.READ},
                         params = params
                     )
-        print(f"Status code: {r.status_code}")
         return r.json()
     
     
@@ -51,9 +50,8 @@ class RollbarRepository(Repository):
     def _create_dictionary(self) -> dict:
 
         params = request.get_json()
-        print(params.items())
         message = {"body": params['message-body']}
-        if params['route']:
+        if "route" in params:
             message["route"] = params['route']
         
         payload =  {"data": {
@@ -65,13 +63,14 @@ class RollbarRepository(Repository):
                     }
 
         for i in ['level', 'title', 'user-id', 'status']:
-            if params[i]:
+            if i in params:
                 payload["data"][i] = params[i] 
         
         return payload
 
 
     def create_item(self):
+                
         r = requests.post(
                         self.item_url,
                         headers = {'accept': 'application/json', 
@@ -80,7 +79,6 @@ class RollbarRepository(Repository):
                                 },
                         json = self._create_dictionary()
                     )
-        print(f"Status code: {r.status_code}")
         return r.json()
     
 
@@ -94,7 +92,6 @@ class RollbarRepository(Repository):
                                     'content-type': 'application/json', 
                                     'X-Rollbar-Access-Token': Config.READ},
                     )
-        print(f"Status code: {r.status_code}")
         return r.json()
     
 
@@ -103,7 +100,6 @@ class RollbarRepository(Repository):
         url_and_id = f"{self.item_url}/{id}" 
         data_dict =  request.get_json()
         
-        print(data_dict)
         r = requests.patch(
                         url_and_id,
                         headers = {'accept': 'application/json', 
@@ -111,7 +107,6 @@ class RollbarRepository(Repository):
                                     'X-Rollbar-Access-Token': Config.WRITE},
                         json = data_dict
                     )
-        print(f"Status code: {r.status_code}")
         return r.json()
 
 
@@ -131,6 +126,5 @@ class RollbarRepository(Repository):
                                     'X-Rollbar-Access-Token': Config.READ},
                         params=params
                     )
-        print(f"Status code: {r.status_code}")
         return r.json()
         

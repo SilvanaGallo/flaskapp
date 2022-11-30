@@ -1,41 +1,31 @@
 from flask import Blueprint
 from flaskapp import repository
 from flaskapp.models import Report
-from flaskblog.reports.utils import json_from_db, json_to_db
+from flaskapp.reports.utils import report_from_db, report_to_db
 
 reports = Blueprint('reports', __name__)
 
-def json_from_db():
-    rep = Report.query.first()
-    
-    dict_report = {} # report to be returned
-    dict_report["err"] = rep.error # puts the err field
-
-    dict_result = [] # it is a list of items
-    {k:v for k,v in params.items() if v is not ''}
-
-
 @reports.route("/reports",  methods=['GET'])
 def top_active_items():
-    if Report.query.first():
-        return json_from_db()
-        #return Report.json_from_db()
-    else:
+    rep = Report.query.first()
+    if rep is None:
         result = repository.top_active_items()
-        #Report.json_to_db(result)
-
-        #########################
-    return result
+        report_to_db(result)
+    return report_from_db()
     
 
 @reports.route("/reports",  methods=['DELETE'])
 def delete_reports():
-    try:
-        rep = Report.query.first()
-        db.session.delete(rep)
-        db.session.commit()
-        result = {"data": {"err": 0, "message": "Report has been cleared."}}
-    except:
-        result = {"data": {"err": 1, "message": "Problems with report cleanup."}}
-        
-    return json.dumps(result, indent=2)
+    rep = Report.query.first()
+    if rep:
+        try:
+            for i in Item.query.all():
+                db.session.delete(i)
+            db.session.delete(rep)
+            db.session.commit()
+            result = {"data": {"err": 0, "message": "Report has been cleared."}}
+        except:
+            result = {"data": {"err": 1, "message": "Problems during report cleanup."}}
+    else:
+        result = {"data": {"err": 0, "message": "Database is empty."}}
+    return result
