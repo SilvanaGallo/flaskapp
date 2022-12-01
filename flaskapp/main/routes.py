@@ -12,4 +12,8 @@ def which():
 @main.route("/check")
 def check():
     result = {"status": "OK"}
+    try:
+        db.session.execute('SELECT 1')
+    except:
+        result["status"] = "KO"
     return result

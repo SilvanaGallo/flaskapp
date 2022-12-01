@@ -3,3 +3,7 @@ __pycache__/
 core.*
 htmlcov
 *.env
+htmlcov/
+.coverage
+.vscode/
+ddagent-install.log
