@@ -4,6 +4,7 @@ import json
 
 class TestMainRoutes:
 
+
     def test_get_which_endpoint(client)-> None:
         response = client.get("/which")
         assert response.status_code == 200
@@ -19,7 +20,7 @@ class TestMainRoutes:
 
         assert response.status_code == 200
         assert res["err"] == 0
-        assert res["status"] == "OK"
+        assert res["status"] == "OK"   
 
     def test_get_check_ko_endpoint(client)-> None: # change to database failure
         # response = client.get("/check")
