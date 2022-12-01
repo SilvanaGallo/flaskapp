@@ -12,4 +12,4 @@ class Config:
     POST_SERVER_ITEM = os.environ.get('POST_SERVER_ITEM')
     POST_CLIENT_ITEM = os.environ.get('POST_CLIENT_ITEM')
     READ = os.environ.get('READ')
-     
+

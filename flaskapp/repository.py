@@ -49,20 +49,20 @@ class RollbarRepository(Repository):
     # It needs a refactorization
     def _create_dictionary(self) -> dict:
 
+        message: dict = {}
         params = request.get_json()
-        message = {"body": params['message-body']}
-        if "route" in params:
-            message["route"] = params['route']
+                
+        message = {"body": params['message-body']} if "message-body" in params else {}
+        message["route"] = params['route'] if "route" in params else ''
         
         payload =  {"data": {
-                            "environment": params['environment'],
                             "body": {
                                     "message": message
                                     }
                             }
                     }
 
-        for i in ['level', 'title', 'user-id', 'status']:
+        for i in ['level', 'title', 'user-id', 'status', 'environment']:
             if i in params:
                 payload["data"][i] = params[i] 
         

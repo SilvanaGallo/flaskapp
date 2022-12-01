@@ -5,22 +5,22 @@ import json
 # It could be divided into 2 files and include a setup.
 # (Next version)
 
-items_url = 'http://localhost:5000/items'
-reports_url = 'http://localhost:5000/reports'
+items_url = 'http://localhost:4999/items'
+reports_url = 'http://localhost:4999/reports'
 
 @click.group()
 def items():
     pass
 
 @items.command()
-@click.option('--assigned-user', default='', help='If not empty, only items assigned to the specified user will be returned. Must be a valid Rollbar username, or you can use the keywords assigned (items that are assigned to any owner) or unassigned (items with no owner).')
-@click.option('--environment', default='', help='If not empty, only items in the specified environment will be returned. Specify multiple times to filter by multiple environments.')
-@click.option('--framework', default='', help='If not empty, only items in the specified framework will be returned. Specify multiple times to filter by multiple frameworks.')
-@click.option('--ids', default='', help='(comma-separated list of integers) if not empty, list of item IDs to return, instead of using all items in the project')
-@click.option('--level', default='', help='If not empty, only items with the specified level will be returned. Valid values: debug, info, warning, error, critical. Specifiy multiple times to filter by multiple levels.')
-@click.option('--page', default=None, help='Page number, starting from 1. 100 items are returned per page.')
-@click.option('--query', default='', help='A search string, using the same format as the search box on the Items page.')
-@click.option('--status', default='', help='If not empty, only items with the specified status will be returned. Valid values: active, resolved, muted, archived. Specify multiple times to filter by multiple statuses.')
+@click.option('-u','--assigned-user', default='', help='If not empty, only items assigned to the specified user will be returned. Must be a valid Rollbar username, or you can use the keywords assigned (items that are assigned to any owner) or unassigned (items with no owner).')
+@click.option('-e','--environment', default='', help='If not empty, only items in the specified environment will be returned. Specify multiple times to filter by multiple environments.')
+@click.option('-f','--framework', default='', help='If not empty, only items in the specified framework will be returned. Specify multiple times to filter by multiple frameworks.')
+@click.option('-i','--ids', default='', help='(comma-separated list of integers) if not empty, list of item IDs to return, instead of using all items in the project')
+@click.option('-l','--level', default='', help='If not empty, only items with the specified level will be returned. Valid values: debug, info, warning, error, critical. Specifiy multiple times to filter by multiple levels.')
+@click.option('-p','--page', default=None, help='Page number, starting from 1. 100 items are returned per page.')
+@click.option('-q','--query', default='', help='A search string, using the same format as the search box on the Items page.')
+@click.option('-s','--status', default='', help='If not empty, only items with the specified status will be returned. Valid values: active, resolved, muted, archived. Specify multiple times to filter by multiple statuses.')
 def get_items(assigned_user, environment, framework, ids, level, page, query, status):
     
     params = {  'assigned-user': assigned_user, 
@@ -37,13 +37,13 @@ def get_items(assigned_user, environment, framework, ids, level, page, query, st
     click.echo(json.dumps(r.json(), indent=2))
 
 @items.command()
-@click.option('--route', default='', help='If not empty, a route of the error or message.')
-@click.option('--environment', default='', help='Specify an environment.', required=True)
-@click.option('--message-body', default='', help='Message.', required=True)
-@click.option('--title', default='', help='Title.')
-@click.option('--level', default='', help='Valid values: debug, info, warning, error, critical.')
-@click.option('--user-id', default=None, help='User assigned.')
-@click.option('--status', default='', help='Valid values: active, resolved, muted, archived.')
+@click.option('-r','--route', default='', help='If not empty, a route of the error or message.')
+@click.option('-e','--environment', default='', help='Specify an environment.', required=True)
+@click.option('-m','--message-body', default='', help='Message.', required=True)
+@click.option('-t','--title', default='', help='Title.')
+@click.option('-l','--level', default='', help='Valid values: debug, info, warning, error, critical.')
+@click.option('-u','--user-id', default=None, help='User assigned.')
+@click.option('-s','--status', default='', help='Valid values: active, resolved, muted, archived.')
 def add_item(route, environment, message_body, title, level, user_id, status):
     params = {  'route': route, 
                 'environment': environment, 
@@ -67,11 +67,11 @@ def get_item(id):
 
 
 @items.command()
-@click.option('--title', default='', help='Title.')
-@click.option('--level', default='', help='Valid values: debug, info, warning, error, critical.')
-@click.option('--user-id', default=None, help='User assigned')
-@click.option('--status', default='', help='Valid values: active, resolved, muted, archived. ')
-@click.option('--resolved-in-version', default='', help='Version in which the item was resolved.')
+@click.option('-t','--title', default='', help='Title.')
+@click.option('-l','--level', default='', help='Valid values: debug, info, warning, error, critical.')
+@click.option('-u','--user-id', default=None, help='User assigned')
+@click.option('-s','--status', default='', help='Valid values: active, resolved, muted, archived. ')
+@click.option('-r','--resolved-in-version', default='', help='Version in which the item was resolved.')
 @click.argument('id', required=True)
 def update_item(title, level, user_id, status, resolved_in_version, id):
     params = {  
@@ -101,8 +101,8 @@ def reports():
 
 
 @reports.command()
-@click.option('--environment', default='', help='Comma-separated list of environments to consider. If empty, then returns results for "any environment".')
-@click.option('--hours', default=24, help='Number of recent hours to consider. Min 1, max 168.')
+@click.option('-e','--environment', default='', help='Comma-separated list of environments to consider. If empty, then returns results for "any environment".')
+@click.option('-h','--hours', default=24, help='Number of recent hours to consider. Min 1, max 168.')
 def top_active_items(environment, hours):
     params = {  
                 'environment': environment, 
