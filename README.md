@@ -106,7 +106,7 @@
 <h4>7. Bonus</h4>
 <ul>
 <ul>
-<li><strong>Implement pagination in the list endpoints.</strong> Not implemented yet.</li>
+<li><strong>Implement pagination in the list endpoints.</strong>Not implemented yet, but I think it can be implemented by using an initial reference to retrieve the element, and then a number of elements after that reference. For example, the items from the 3rd item and 5 items after that reference.</li>
 <li><strong>Update the code of your <code>/check</code> endpoint to return&nbsp;<strong>KO</strong>when the connection with the database is broken.</strong> I added a try except block into the endpoint to test the connection by doing a simple select query and, if it raises an exception, I can assume that there is a problem with the database connection </li>
 <li><strong>Handle the credentials using environment variables, do not put the secrets in the code.</strong> I started using a Config class to capture the credentials from the environment variables os the OS. Then I installed dotenv but I had doubts about where set the values from the .env file</li>
 </ul>
