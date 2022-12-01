@@ -112,32 +112,3 @@
 </ul>
 </ul>
 <p></p>
-</div>
-
-    </div>
-</div>
-
-
-  
-  <script type="text/javascript">
-    (function (require) {
-        require(['/static/js/dateutil_factory.a28baef97506.js?raw'], function () {
-          require(['js/dateutil_factory'], function (DateUtilFactory) {
-            
-    DateUtilFactory.transform('.localized-datetime');
-
-          });
-        });
-    }).call(this, require || RequireJS.require);
-  </script>
-
-
-<script>
-    function emit_event(message) {
-        parent.postMessage(message, '*');
-    }
-</script>
-
-</div>
-
-      </main>
